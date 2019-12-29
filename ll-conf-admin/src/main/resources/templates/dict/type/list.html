@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Admin 枚举字典管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/style/admin.css}" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+              <select name="type" lay-search="">
+                <option value="">全部</option>
+                <option th:each="obj:${typeList}" th:value="${obj.type}" th:text="${obj.name}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+              <input type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+              <select name="status">
+                <option value="">全部</option>
+                <option th:each="obj:${statusList}" th:value="${obj.code}" th:text="${obj.text}"></option>
+              </select>
+            </div>
+          </div>
+<!--        </div>-->
+<!--        <div class="layui-form-item">-->
+<!--          <div class="layui-inline" style="float: right;padding-right: 60px;">-->
+          <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-type-front-search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i> 搜索
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="layui-card-body">
+        <div class="layui-btn-group" style="padding-bottom: 10px;">
+          <!-- 新增 -->
+          <button type="button" class="layui-btn btn-op-type layui-btn-sm" data-type="add">
+            <i class="layui-icon">&#xe654;</i>新增
+          </button>
+          <!-- 修改 -->
+<!--          <button type="button" class="layui-btn layui-btn-sm">-->
+<!--            <i class="layui-icon">&#xe642;</i>-->
+<!--          </button>-->
+          <!-- 删除 -->
+          <button type="button" class="layui-btn btn-op-type layui-btn-sm" data-type="batchDel">
+            <i class="layui-icon">&#xe640;</i>删除
+          </button>
+        </div>
+        
+        <table id="LAY-type-table" lay-filter="LAY-type-table"></table>
+
+        <script type="text/html" id="type-table">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+
+        <script type="text/html" id="switchTpl">
+          <input type="checkbox" disabled name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" {{ d.status == 'Y' ?'checked' : '' }}>
+        </script>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script th:src="@{/layui/layui.all.js}"></script>
+  <script th:src="@{/modules/type.js}"></script>
+  <script>
+
+    //监听搜索
+    layui.form.on('submit(LAY-type-front-search)', function(data){
+      var field = data.field;
+      //执行重载
+      layui.table.reload('LAY-type-table', {
+        where: field
+      });
+    });
+
+    //事件
+    var active = {
+      batchDel: function(){
+        var checkStatus = layui.table.checkStatus('LAY-type-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择数据');
+        }
+        layer.confirm('确定删除吗？', function(index) {
+
+          //执行 Ajax 后重载
+          layui.$.ajax({
+            url:'/dict/type/batchDel'
+            ,type:'post'
+            ,contentType:'application/json;charset=utf-8'
+            ,dataType:'json'
+            ,data: JSON.stringify(checkData)
+            ,success:function(data){
+              //执行成功
+              if (data.code == 0 ) {
+                layer.msg(data.msg, {icon: 1});
+                layui.table.reload('LAY-type-table'); //数据刷新
+                layer.close(index); //关闭弹层
+              } else {
+                layer.msg(data.msg, { icon: 7, time: 5000, shade: [0.6, '#000', true] });
+              }
+            }
+          });
+        });
+      }
+      ,add: function(){
+        layer.open({
+          type: 2
+          ,title: '添加'
+          ,content: '/dict/type/turn/add'
+          // ,maxmin: true
+          ,area: ['500px', '450px']
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+            var iframeWindow = window['layui-layer-iframe'+ index]
+            ,submitID = 'LAY-type-front-submit'
+            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+            //监听提交
+            iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+              var field = data.field; //获取提交的字段
+              console.log(field);
+
+              //提交 Ajax 成功后，静态更新表格中的数据
+              layui.$.ajax({
+                url:'/dict/type/save',
+                type:'post',
+                contentType:'application/json;charset=utf-8',
+                dataType:'json',
+                data: JSON.stringify(field),
+                success:function(data){
+                  //执行成功
+                  if (data.code == 0 ) {
+                    layer.msg(data.msg, {icon: 1});
+                    layui.table.reload('LAY-type-table'); //数据刷新
+                    layer.close(index); //关闭弹层
+                  } else {
+                    layer.msg(data.msg, { icon: 7, time: 5000, shade: [0.6, '#000', true] });
+                  }
+                }
+              });
+            });
+
+            submit.trigger('click');
+          }
+        });
+      }
+    };
+
+    //执行事件操作
+    layui.$('.layui-btn.btn-op-type').on('click', function(){
+      var type = layui.$(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+  </script>
+</body>
+</html>

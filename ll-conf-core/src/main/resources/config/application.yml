@@ -1,24 +1,24 @@
-#spring:
-#  data:
-#    mongodb:
-#      uri: mongodb://114.67.108.221/conf
-
 spring:
-  application:
-    name: lv-conf-core
-  jpa:
-    database: mysql
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate.format_sql: true
-    open-in-view: false
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://122.51.156.3:3306/conf?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&autoReconnect=true
-    username: root
-    password: root123456
+  data:
+    mongodb:
+      uri: mongodb://114.67.108.221/conf
+
+#spring:
+#  application:
+#    name: lv-conf-core
+#  jpa:
+#    database: mysql
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate.format_sql: true
+#    open-in-view: false
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://122.51.156.3:3306/conf?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&autoReconnect=true
+#    username: root
+#    password: root123456
     #    ### springboot 2.X 初始化数据库，需要加上以下配置
     #    initialization-mode: always
     #    schema: classpath:/org/springframework/batch/core/schema-mysql.sql

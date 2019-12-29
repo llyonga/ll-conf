@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Admin </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="code-form-edit" id="code-form-edit" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">类型</label>
+      <div class="layui-input-inline">
+        <input type="hidden" name="id"  th:value="${pmCode.id}"/>
+<!--        <input type="text" name="type" th:if="${pmCode.id != null}" disabled th:value="${pmCode.type}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">-->
+<!--        <input type="text" name="type" th:if="${pmCode.id == null}" th:value="${pmCode.type}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">-->
+<!--        -->
+        <select name="type" id="type" lay-filter="type-select" lay-verify="required">
+          <option value="">请选择</option>
+          <option th:each="obj:${typeList}" th:value="${obj.type}" th:selected="${obj.type eq pmCode.type}" th:text="${obj.name}"></option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">代码</label>
+      <div class="layui-input-inline">
+        <input type="text" name="code" th:value="${pmCode.code}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">文本</label>
+      <div class="layui-input-inline">
+        <input type="text" name="text" th:value="${pmCode.text}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" lay-filter="status">
+      <label class="layui-form-label">状态</label>
+      <div class="layui-input-block">
+        <input type="checkbox" th:checked="${ pmCode.status == null || pmCode.status == 'Y'} ? true" name="status" lay-skin="switch" lay-text="启用|禁用">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">备注</label>
+      <div class="layui-input-block" style="width: 250px;">
+        <input type="text" name="remark" th:value="${pmCode.remark}" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-code-front-submit" id="LAY-code-front-submit" value="确认">
+    </div>
+  </div>
+
+  <script th:src="@{/layui/layui.all.js}"></script>
+  <!-- 获取model返回的值-->
+<!--  <script th:inline="javascript">-->
+<!--    var obj = [[${pmCode}]];-->
+<!--    console.log([[${pmCode.id == null}]]);-->
+<!--  </script>-->
+  <script>
+
+    // layui.form.val('code-form-edit', {
+    //   "id": obj.id
+    //   ,"type": obj.type
+    //   ,"name": obj.name
+    //   ,"status": obj.status
+    //   ,"remark": obj.remark
+    //   ,"status": obj.status == 'Y' ? true : false
+    // });
+
+  </script>
+</body>
+</html>
