@@ -1,4 +1,9 @@
 
+server:
+  port: 8120
+  servlet:
+    context-path: /
+
 spring:
   ### thymeleaf 配置
   thymeleaf:

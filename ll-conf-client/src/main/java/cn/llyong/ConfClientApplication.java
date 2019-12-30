@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LlConfClientApplication {
+public class ConfClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LlConfClientApplication.class, args);
+        SpringApplication.run(ConfClientApplication.class, args);
     }
 
 }
